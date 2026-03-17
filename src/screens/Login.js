@@ -11,6 +11,10 @@ const Login = () => {
     const [message, setMessage] = useState('');
     const [animate, setAnimate] = useState(false);
 
+    // ✅ Added loading states
+    const [loginLoading, setLoginLoading] = useState(false);
+    const [otpLoading, setOtpLoading] = useState(false);
+
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -22,6 +26,10 @@ const Login = () => {
     // =========================
     const handleLogin = async (e) => {
         e.preventDefault();
+
+        if (loginLoading) return; // prevent multiple clicks
+        setLoginLoading(true);
+
         setMessage("");
 
         try {
@@ -40,14 +48,9 @@ const Login = () => {
                     return;
                 }
 
-                // Save user locally
                 localStorage.setItem("bankUser", JSON.stringify(response.data));
-
                 setUserId(id);
 
-                // =========================
-                // SEND OTP
-                // =========================
                 console.log("Sending OTP to user ID:", id);
                 const sendOtpResponse = await axios.get(
                     "https://banking-backend-ltoj.onrender.com/otp/sendotp",
@@ -58,6 +61,7 @@ const Login = () => {
                         }
                     }
                 );
+
                 console.log("SEND OTP RESPONSE:", sendOtpResponse.data);
 
                 if (sendOtpResponse.data === "OTP_SENT") {
@@ -72,6 +76,8 @@ const Login = () => {
 
         } catch (error) {
             setMessage("Login request failed.");
+        } finally {
+            setLoginLoading(false); // ✅ re-enable button
         }
     };
 
@@ -80,6 +86,10 @@ const Login = () => {
     // =========================
     const handleVerifyOtp = async (e) => {
         e.preventDefault();
+
+        if (otpLoading) return; // prevent multiple clicks
+        setOtpLoading(true);
+
         setMessage("");
 
         try {
@@ -101,6 +111,8 @@ const Login = () => {
 
         } catch (error) {
             setMessage("OTP verification failed.");
+        } finally {
+            setOtpLoading(false); // ✅ re-enable button
         }
     };
 
@@ -145,11 +157,20 @@ const Login = () => {
 
                         <button
                             type="submit"
-                            style={styles.button}
-                            onMouseOver={(e) => e.target.style.background = "#1565c0"}
-                            onMouseOut={(e) => e.target.style.background = "#1e88e5"}
+                            disabled={loginLoading}
+                            style={{
+                                ...styles.button,
+                                opacity: loginLoading ? 0.6 : 1,
+                                cursor: loginLoading ? "not-allowed" : "pointer"
+                            }}
+                            onMouseOver={(e) => {
+                                if (!loginLoading) e.target.style.background = "#1565c0";
+                            }}
+                            onMouseOut={(e) => {
+                                if (!loginLoading) e.target.style.background = "#1e88e5";
+                            }}
                         >
-                            Login
+                            {loginLoading ? "Processing..." : "Login"}
                         </button>
                     </form>
                 )}
@@ -169,11 +190,20 @@ const Login = () => {
 
                         <button
                             type="submit"
-                            style={styles.button}
-                            onMouseOver={(e) => e.target.style.background = "#1565c0"}
-                            onMouseOut={(e) => e.target.style.background = "#1e88e5"}
+                            disabled={otpLoading}
+                            style={{
+                                ...styles.button,
+                                opacity: otpLoading ? 0.6 : 1,
+                                cursor: otpLoading ? "not-allowed" : "pointer"
+                            }}
+                            onMouseOver={(e) => {
+                                if (!otpLoading) e.target.style.background = "#1565c0";
+                            }}
+                            onMouseOut={(e) => {
+                                if (!otpLoading) e.target.style.background = "#1e88e5";
+                            }}
                         >
-                            Verify OTP
+                            {otpLoading ? "Verifying..." : "Verify OTP"}
                         </button>
                     </form>
                 )}
