@@ -18,7 +18,7 @@ const Withdraw = () => {
 
             // 1️⃣ check if pin is set
             const pinCheck = await fetch(
-                `http://localhost:8088/pin/issetpin?userId=${user.userId}`
+                `https://banking-backend-ltoj.onrender.com/pin/issetpin?userId=${user.userId}`
             );
 
             const isPinSet = await pinCheck.json();
@@ -30,7 +30,7 @@ const Withdraw = () => {
             }
 
             // 2️⃣ withdraw api
-            const response = await fetch("http://localhost:8088/cash/withdraw",{
+            const response = await fetch("https://banking-backend-ltoj.onrender.com/cash/withdraw",{
                 method:"POST",
                 headers:{
                     "Content-Type":"application/json"

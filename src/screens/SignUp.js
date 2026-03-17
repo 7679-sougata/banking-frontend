@@ -17,7 +17,7 @@ const Signup = () => {
     const handleSignup = async (e) => {
         e.preventDefault();
         try {
-            await axios.post("http://localhost:8088/bank/create", formData);
+            await axios.post("https://banking-backend-ltoj.onrender.com/bank/create", formData);
             alert("Account Created Successfully! Please login.");
             navigate('/login');
         } catch (error) {

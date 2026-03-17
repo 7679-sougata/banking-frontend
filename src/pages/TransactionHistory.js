@@ -12,7 +12,7 @@ const TransactionHistory = () => {
             try {
 
                 const response = await fetch(
-                    `http://localhost:8088/cash/gethistory?accNo=${user.accNo}`,
+                    `https://banking-backend-ltoj.onrender.com/cash/gethistory?accNo=${user.accNo}`,
                     { method: "POST" }
                 );
 

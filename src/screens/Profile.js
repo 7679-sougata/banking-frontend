@@ -24,7 +24,7 @@ const Profile = () => {
     const checkPinStatus = async () => {
         try {
             const res = await axios.get(
-                `http://localhost:8088/pin/issetpin?userId=${user.userId}`
+                `https://banking-backend-ltoj.onrender.com/pin/issetpin?userId=${user.userId}`
             );
 
             setPinAlreadySet(res.data);
@@ -54,7 +54,7 @@ const Profile = () => {
 
         try {
 
-            await axios.post("http://localhost:8088/pin/savepin", data);
+            await axios.post("https://banking-backend-ltoj.onrender.com/pin/savepin", data);
 
             setMessage("PIN saved successfully");
 
@@ -70,7 +70,7 @@ const Profile = () => {
         try {
 
             await axios.get(
-                `http://localhost:8088/otp/sendotp`,
+                `https://banking-backend-ltoj.onrender.com/otp/sendotp`,
                 {
                     params:{
                         userId:user.userId,
@@ -94,7 +94,7 @@ const Profile = () => {
         try {
 
             await axios.get(
-                `http://localhost:8088/otp/sendotp`,
+                `https://banking-backend-ltoj.onrender.com/otp/sendotp`,
                 {
                     params:{
                         userId:user.userId,
@@ -118,7 +118,7 @@ const Profile = () => {
         try {
 
             const res = await axios.get(
-                `http://localhost:8088/otp/verifyotp`,
+                `https://banking-backend-ltoj.onrender.com/otp/verifyotp`,
                 {
                     params:{
                         userId:user.userId,
@@ -150,10 +150,10 @@ const Profile = () => {
             let params = {};
 
             if(changeType === "trans"){
-                url = "http://localhost:8088/pin/changetranspin";
+                url = "https://banking-backend-ltoj.onrender.com/pin/changetranspin";
                 params = {userId:user.userId, transPin:newPin};
             }else{
-                url = "http://localhost:8088/pin/changeatmpin";
+                url = "https://banking-backend-ltoj.onrender.com/pin/changeatmpin";
                 params = {userId:user.userId, atmPin:newPin};
             }
 

@@ -18,7 +18,7 @@ const Deposit = () => {
 
         try{
 
-            const response = await fetch("http://localhost:8088/cash/deposit",{
+            const response = await fetch("https://banking-backend-ltoj.onrender.com/cash/deposit",{
                 method:"POST",
                 headers:{
                     "Content-Type":"application/json"

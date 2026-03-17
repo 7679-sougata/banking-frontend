@@ -18,7 +18,7 @@ const BalanceCheek = () => {
 
             // 1️⃣ check if pin already set
             const pinCheck = await fetch(
-                `http://localhost:8088/pin/issetpin?userId=${user.userId}`
+                `https://banking-backend-ltoj.onrender.com/pin/issetpin?userId=${user.userId}`
             );
 
             const isPinSet = await pinCheck.json();
@@ -30,7 +30,7 @@ const BalanceCheek = () => {
             }
 
             // 2️⃣ call balance API
-            const response = await fetch("http://localhost:8088/cash/cheekbalance",{
+            const response = await fetch("https://banking-backend-ltoj.onrender.com/cash/cheekbalance",{
                 method:"POST",
                 headers:{
                     "Content-Type":"application/json"

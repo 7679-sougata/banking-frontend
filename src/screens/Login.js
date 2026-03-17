@@ -26,7 +26,7 @@ const Login = () => {
 
         try {
             const response = await axios.post(
-                "http://localhost:8088/bank/login",
+                "https://banking-backend-ltoj.onrender.com/bank/login",
                 loginData
             );
 
@@ -48,8 +48,9 @@ const Login = () => {
                 // =========================
                 // SEND OTP
                 // =========================
+                console.log("Sending OTP to user ID:", id);
                 const sendOtpResponse = await axios.get(
-                    "http://localhost:8088/otp/sendotp",
+                    "https://banking-backend-ltoj.onrender.com/otp/sendotp",
                     {
                         params: {
                             userId: id,
@@ -57,6 +58,7 @@ const Login = () => {
                         }
                     }
                 );
+                console.log("SEND OTP RESPONSE:", sendOtpResponse.data);
 
                 if (sendOtpResponse.data === "OTP_SENT") {
                     setStep("OTP");
@@ -82,7 +84,7 @@ const Login = () => {
 
         try {
             const verifyResponse = await axios.get(
-                "http://localhost:8088/otp/verifyotp",
+                "https://banking-backend-ltoj.onrender.com/otp/verifyotp",
                 {
                     params: {
                         userId: userId,
