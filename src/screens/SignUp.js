@@ -8,6 +8,9 @@ const Signup = () => {
     });
     const [message, setMessage] = useState('');
     const [animate, setAnimate] = useState(false);
+    const [loading, setLoading] = useState(false); 
+    const [showPassword, setShowPassword] = useState(false); // Eye feature state
+
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -16,12 +19,24 @@ const Signup = () => {
 
     const handleSignup = async (e) => {
         e.preventDefault();
+
+        // Extra Validation for Aadhaar Length
+        if (formData.AadhaarNo.length !== 12) {
+            setMessage("Aadhaar Number must be exactly 12 digits.");
+            return;
+        }
+
+        setLoading(true);
+        setMessage(''); 
+        
         try {
             await axios.post("https://banking-backend-ltoj.onrender.com/bank/create", formData);
             alert("Account Created Successfully! Please login.");
             navigate('/login');
         } catch (error) {
-            setMessage("Error creating account.");
+            setMessage("Error creating account. Please try again.");
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -54,21 +69,39 @@ const Signup = () => {
                         onChange={(e) => setFormData({...formData, email: e.target.value})}
                     />
 
-                    <input
-                        type="password"
-                        placeholder="Password"
-                        required
-                        style={styles.input}
-                        onChange={(e) => setFormData({...formData, password: e.target.value})}
-                    />
+                    {/* Password with Eye Feature */}
+                    <div style={styles.passwordWrapper}>
+                        <input
+                            type={showPassword ? "text" : "password"}
+                            placeholder="Password"
+                            required
+                            style={{...styles.input, width: '100%', paddingRight: '45px'}}
+                            onChange={(e) => setFormData({...formData, password: e.target.value})}
+                        />
+                        <span 
+                            style={styles.eyeIcon} 
+                            onClick={() => setShowPassword(!showPassword)}
+                        >
+                            {showPassword ? "👁️" : "🙈"}
+                        </span>
+                    </div>
 
+                    {/* Aadhaar with Integer Only & 12 Digit Logic */}
                     <input
                         type="text"
-                        placeholder="Aadhaar Number"
+                        placeholder="Aadhaar Number (12 Digits)"
                         required
+                        maxLength="12"
                         style={styles.input}
-                        onChange={(e) => setFormData({...formData, AadhaarNo: e.target.value})}
+                        value={formData.AadhaarNo}
+                        onChange={(e) => {
+                            const value = e.target.value;
+                            if (/^\d*$/.test(value) && value.length <= 12) {
+                                setFormData({ ...formData, AadhaarNo: value });
+                            }
+                        }}
                     />
+
                     <input
                         type="text"
                         placeholder="Address"
@@ -87,11 +120,20 @@ const Signup = () => {
 
                     <button
                         type="submit"
-                        style={styles.button}
-                        onMouseOver={(e) => e.target.style.background = "#1565c0"}
-                        onMouseOut={(e) => e.target.style.background = "#1e88e5"}
+                        disabled={loading}
+                        style={{
+                            ...styles.button,
+                            cursor: loading ? "not-allowed" : "pointer",
+                            opacity: loading ? 0.7 : 1 
+                        }}
+                        onMouseOver={(e) => {
+                            if(!loading) e.target.style.background = "#1565c0";
+                        }}
+                        onMouseOut={(e) => {
+                            if(!loading) e.target.style.background = "#1e88e5";
+                        }}
                     >
-                        Create Account
+                        {loading ? "Processing..." : "Create Account"}
                     </button>
                 </form>
 
@@ -143,7 +185,22 @@ const styles = {
         outline: "none",
         fontSize: "14px",
         background: "rgba(255,255,255,0.15)",
-        color: "white"
+        color: "white",
+        boxSizing: "border-box"
+    },
+    passwordWrapper: {
+        position: "relative",
+        display: "flex",
+        alignItems: "center",
+        width: "100%"
+    },
+    eyeIcon: {
+        position: "absolute",
+        right: "15px",
+        cursor: "pointer",
+        fontSize: "18px",
+        userSelect: "none",
+        opacity: "0.8"
     },
     button: {
         padding: "12px",
@@ -151,7 +208,6 @@ const styles = {
         border: "none",
         fontSize: "15px",
         fontWeight: "600",
-        cursor: "pointer",
         background: "#1e88e5",
         color: "white",
         transition: "0.3s",
@@ -170,7 +226,8 @@ const styles = {
     error: {
         color: "#ff5252",
         textAlign: "center",
-        marginBottom: "15px"
+        marginBottom: "15px",
+        fontSize: "14px"
     }
 };
 
